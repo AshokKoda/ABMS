@@ -4,5 +4,6 @@ public interface IPerson {
 
 	public void addPerson();
 	public void showAllContacts();
-	public void editRecord();
+	public void editPerson();
+	public void deletePerson();
 }

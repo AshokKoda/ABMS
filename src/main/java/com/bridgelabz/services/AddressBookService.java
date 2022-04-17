@@ -2,7 +2,6 @@ package com.bridgelabz.services;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.bridgelabz.model.Person;
 
 public class AddressBookService implements IPerson {
@@ -36,10 +35,9 @@ public class AddressBookService implements IPerson {
 
 		personList.add(new Person(firstName, lastName, email, address, city, state, phoneNo, zipCode));
 		System.out.println("Contact added successfully...");
-		System.out.println("<------------------------------------------------------->");
 	}
 
-	public void editRecord() {
+	public void editPerson() {
 		System.out.println("-------------- Edit Contact --------------");
 		if (personList.isEmpty()) {
 			System.out.println("No Records To edit!!!");
@@ -112,8 +110,24 @@ public class AddressBookService implements IPerson {
 				System.out.println("Contact is updated successfully.!!!");
 			}
 		}
-		System.out.println("<------------------------------------------------------->");
 
+	}
+	
+	public void deletePerson() {
+		System.out.println("-------------- Delete Contact --------------");
+		if (personList.isEmpty()) {
+			System.out.println("No Records To delete!!!");
+		} else {
+			for (Person person : personList) {
+				System.out.println("ID: #" + personList.indexOf(person) + " : " + person);
+			}
+
+			System.out.print("\nEnter #ID to delete contact : ");
+			int id = InputUtil.getIntValue();
+			personList.remove(id);
+			System.out.println("Contact is deleted successfully.........!!!!!!");
+		}
+		
 	}
 
 	public void showAllContacts() {
@@ -125,7 +139,6 @@ public class AddressBookService implements IPerson {
 				System.out.println(person);
 			}
 		}
-		System.out.println("<------------------------------------------------------->");
 	}
 
 }

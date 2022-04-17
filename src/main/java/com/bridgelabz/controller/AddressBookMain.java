@@ -16,8 +16,9 @@ public class AddressBookMain {
 		boolean exit = false;
 		sc = new Scanner(System.in);
 		while (!exit) {
+			System.out.println("<----------------------------------------------------------------->");
 			System.out.println(
-					"1.Create Contact \t2.Show Contacts \t3.Update Contact \t0.Quit");
+					"1.Create Contact \t2.Show Contacts \t3.Update Contact \t4.Delete Contact \t0.Quit");
 			System.out.println("---------- Enter your option ----------------- ");
 			int choice = sc.nextInt();
 			
@@ -29,7 +30,10 @@ public class AddressBookMain {
 				service.showAllContacts();
 				break;
 			case 3:
-				service.editRecord();
+				service.editPerson();
+				break;
+			case 4:
+				service.deletePerson();
 				break;
 			case 0:
 				exit = true;
