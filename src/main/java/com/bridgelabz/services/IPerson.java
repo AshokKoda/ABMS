@@ -2,5 +2,7 @@ package com.bridgelabz.services;
 
 public interface IPerson {
 
-	void addPerson();
+	public void addPerson();
+	public void showAllContacts();
+	public void editRecord();
 }

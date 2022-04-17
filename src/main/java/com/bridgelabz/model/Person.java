@@ -7,7 +7,6 @@ public class Person {
 
 	public Person(String fname, String lname, String email, String address, String city, String state, long phone,
 			long zip) {
-		super();
 		this.fname = fname;
 		this.lname = lname;
 		this.email = email;

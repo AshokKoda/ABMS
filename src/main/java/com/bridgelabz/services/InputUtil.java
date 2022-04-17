@@ -1,4 +1,4 @@
-package com.bridgelabz.utils;
+package com.bridgelabz.services;
 
 import java.util.Scanner;
 
@@ -9,12 +9,12 @@ public class InputUtil {
 	public static int getIntValue() {
 		return sc.nextInt();
 	}
-
-	public static String getStringValue() {
-		return sc.nextLine();
-	}
 	
 	public static long getLongValue() {
 		return sc.nextLong();
+	}
+
+	public static String getStringValue() {
+		return sc.next();
 	}
 }
