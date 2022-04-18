@@ -4,7 +4,7 @@ public class Person {
 
 	private String fname, lname, email, address, city, state;
 	private long phone, zip;
-	
+
 	public Person() {
 		// TODO Auto-generated constructor stub
 	}
@@ -89,5 +89,15 @@ public class Person {
 	public String toString() {
 		return "Person [fname=" + fname + ", lname=" + lname + ", email=" + email + ", address=" + address + ", city="
 				+ city + ", state=" + state + ", phone=" + phone + ", zip=" + zip + "]";
+	}
+
+	@Override
+	public boolean equals(Object p) {
+		return this.fname.equals(((Person) p).getFname());
+	}
+
+	@Override
+	public int hashCode() {
+		return fname.hashCode();
 	}
 }
