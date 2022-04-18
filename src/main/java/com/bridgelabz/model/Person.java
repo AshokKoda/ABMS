@@ -4,6 +4,10 @@ public class Person {
 
 	private String fname, lname, email, address, city, state;
 	private long phone, zip;
+	
+	public Person() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public Person(String fname, String lname, String email, String address, String city, String state, long phone,
 			long zip) {
