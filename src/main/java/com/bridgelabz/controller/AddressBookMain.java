@@ -53,6 +53,9 @@ public class AddressBookMain {
 					ab.deletePerson();
 					break;
 				case 5:
+					ab.searchInContacts();
+					break;
+				case 6:
 					userOption = 5;
 					System.out.println("**********Thank you.....!!!*********");
 					break;
@@ -69,7 +72,7 @@ public class AddressBookMain {
 
 	public static int getOptions(Scanner sc) {
 		System.out.println("**********************Select Menu**********************");
-		System.out.println("1.Add Contact \t2.Show Contacts \t3.Edit Contact \t4.Delete Contact \t5.Exit");
+		System.out.println("1.Add Contact \t2.Show Contacts \t3.Edit Contact \t4.Delete Contact \t5.Search By City or State \t6.Exit");
 		System.out.println("---------- Enter Your Choice ----------");
 		int option = sc.nextInt();
 		return option;
