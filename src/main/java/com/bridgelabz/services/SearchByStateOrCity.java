@@ -1,6 +1,7 @@
 package com.bridgelabz.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,7 +9,9 @@ import com.bridgelabz.model.Person;
 
 public class SearchByStateOrCity {
 
-	static Scanner sc ;
+	static Scanner sc;
+	public HashMap<String, AddressBookService> addressBook;
+
 	public void searchByState(List<Person> person) {
 		int flag = 0;
 		sc = new Scanner(System.in);
@@ -32,8 +35,7 @@ public class SearchByStateOrCity {
 			System.out.println("No persons with is state.!!!");
 		}
 	}
-	
-	
+
 	public void searchByCity(List<Person> person) {
 		int flag = 0;
 		sc = new Scanner(System.in);
@@ -57,4 +59,5 @@ public class SearchByStateOrCity {
 			System.out.println("No persons with is city.!!!");
 		}
 	}
+
 }
