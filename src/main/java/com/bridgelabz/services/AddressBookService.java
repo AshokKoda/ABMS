@@ -10,8 +10,8 @@ import com.bridgelabz.model.Person;
 
 public class AddressBookService implements IPerson {
 
-	String firstName, lastName, email, address, city, state;
-	long phoneNo, zipCode;
+	String firstName, lastName, email, address, city, state, zipCode;
+	long phoneNo;
 	List<Person> personList;
 	static Scanner sc;
 	public HashMap<String, Person> addressBook = new HashMap<>();
@@ -47,7 +47,7 @@ public class AddressBookService implements IPerson {
 		System.out.print("Enter Phone Number : ");
 		phoneNo = InputUtil.getLongValue();
 		System.out.print("Enter zip : ");
-		zipCode = InputUtil.getLongValue();
+		zipCode = InputUtil.getStringValue();
 
 		personList.add(new Person(firstName, lastName, email, address, city, state, phoneNo, zipCode));
 		System.out.println("Contact added successfully...");
@@ -123,7 +123,7 @@ public class AddressBookService implements IPerson {
 					break;
 				case 8:
 					System.out.print("Enter new Zip Code : ");
-					zipCode = InputUtil.getLongValue();
+					zipCode = InputUtil.getStringValue();
 					personList.get(id).setZip(zipCode);
 					break;
 				case 9:
@@ -212,6 +212,39 @@ public class AddressBookService implements IPerson {
 				} else {
 					System.out.println("No such a records in adddressbook");
 				}
+			}
+		}
+
+	}
+
+	// sort Address Book by City State Zip
+	public void sortAddressBookCityStateZip() {
+		sc = new Scanner(System.in);
+		SortByCityStateZip sort = new SortByCityStateZip();
+		if (personList.isEmpty()) {
+			System.out.println("No Records!!!");
+		} else {
+			System.out.println(
+					"Sort By...\n" + "1: First Name\n" + "2: City\n" + "3: State\n" + "4: Zip Code\n" + "5: Back");
+			System.out.println("------------- Enter your option -------------");
+			int choice = sc.nextInt();
+			switch (choice) {
+			case 1:
+				sort.sortByName(personList);
+				break;
+			case 2:
+				sort.sortByCity(personList);
+				break;
+			case 3:
+				sort.sortByState(personList);
+				break;
+			case 4:
+				sort.sortByZip(personList);
+				break;
+			case 5:
+				return;
+			default:
+				System.out.println("Please Enter Valid Option...");
 			}
 		}
 

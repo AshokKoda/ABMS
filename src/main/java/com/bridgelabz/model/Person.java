@@ -1,16 +1,18 @@
 package com.bridgelabz.model;
 
+import java.util.Comparator;
+
 public class Person {
 
-	private String fname, lname, email, address, city, state;
-	private long phone, zip;
+	private String fname, lname, email, address, city, state, zip;
+	private long phone;
 
 	public Person() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public Person(String fname, String lname, String email, String address, String city, String state, long phone,
-			long zip) {
+			String zip) {
 		this.fname = fname;
 		this.lname = lname;
 		this.email = email;
@@ -77,11 +79,11 @@ public class Person {
 		this.phone = phone;
 	}
 
-	public long getZip() {
+	public String getZip() {
 		return zip;
 	}
 
-	public void setZip(long zip) {
+	public void setZip(String zip) {
 		this.zip = zip;
 	}
 
@@ -100,4 +102,29 @@ public class Person {
 	public int hashCode() {
 		return fname.hashCode();
 	}
+
+	/* Sort By First Name */
+	public static Comparator<Person> firstNameSorting = (p1, p2) -> {
+		String firstName = p1.getFname();
+		String firstName2 = p2.getFname();
+		return firstName.compareToIgnoreCase(firstName2);
+	};
+	/* Sort By City */
+	public static Comparator<Person> citySorting = (p1, p2) -> {
+		String city1 = p1.getCity();
+		String city2 = p2.getCity();
+		return city1.compareToIgnoreCase(city2);
+	};
+	/* Sort By State */
+	public static Comparator<Person> stateSorting = (p1, p2) -> {
+		String state1 = p1.getState();
+		String state2 = p2.getState();
+		return state1.compareToIgnoreCase(state2);
+	};
+	/* Sort By Zip */
+	public static Comparator<Person> zipSorting = (p1, p2) -> {
+		String zip1 = p1.getZip();
+		String zip2 = p2.getZip();
+		return zip1.compareToIgnoreCase(zip2);
+	};
 }
