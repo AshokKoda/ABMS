@@ -1,5 +1,6 @@
 package com.bridgelabz.services;
 
+
 public interface IPerson {
 
 	public void addPerson();
