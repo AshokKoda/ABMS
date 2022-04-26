@@ -1,0 +1,25 @@
+[
+  {
+    "id": 401,
+    "fname": "Ashok",
+    "lname": "Koda",
+    "email": "a.koda@gmail.com",
+    "address": "Cheppaluppada",
+    "city": "Vizag",
+    "state": "AP",
+    "zip": "531163",
+    "phone": 8555871656
+  }
+][
+  {
+    "id": 757,
+    "fname": "Koda",
+    "lname": "Harish",
+    "email": "harish@gmail.com",
+    "address": "Bheemili",
+    "city": "Vizag",
+    "state": "AP",
+    "zip": "531163",
+    "phone": 9154897701
+  }
+]
