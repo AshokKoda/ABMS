@@ -8,6 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
@@ -49,6 +56,18 @@ public class AddressBook {
 			friendsCsv.writeNext(header);
 			bussinessCsv.writeNext(header);
 
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			FileWriter file1 = new FileWriter("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Family.json");
+			FileWriter file2 = new FileWriter("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Friends.json");
+			FileWriter file3 = new FileWriter(
+					"D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Bussiness.json");
+
+			JSONArray outerObj1 = new JSONArray();
+			JSONArray outerObj2 = new JSONArray();
+			JSONArray outerObj3 = new JSONArray();
+
+			JSONObject jsonObject = new JSONObject();
+
 			while (!EXIT) {
 				sc = new Scanner(System.in);
 				System.out.println("Enter 1 ,2 ,3 for select address book and 4 to exit");
@@ -69,80 +88,112 @@ public class AddressBook {
 				default:
 					System.out.println("Invalid option.Please try again.");
 				}
-				
+
 				System.out.println("1.Create new contact\n2.Edit Contact\n3.Delete Contact");
 				sc = new Scanner(System.in);
-				 int choice = sc.nextInt();
-				 if (choice == 1) {
-					 Contact contact = new Contact();
-					 contact.setContactInfo();
-					 name = contact.firstName.toUpperCase() + " " + contact.lastName.toUpperCase();
-					 if(multiAddressBook.get(key).addressBook.keySet().stream().noneMatch(c -> c.equalsIgnoreCase(name))) {
-						 multiAddressBook.get(key).addressBook.put(name, contact);
-						 multiAddressBook.get(key).listOfContacts.add(contact);
-						 multiAddressBook.get(key).addressBook.get(name).displayContactInfo();
-						 
-						 String csvOutputString = multiAddressBook.get(key).addressBook.get(name).showContactCSV();
-						 String[] csvData = csvOutputString.split(",");
-						 
-						 switch (option) {
-						 case 1:
-							 familyCsv.writeNext(csvData);
-							 break;
-						 case 2:
-							 friendsCsv.writeNext(csvData);
-							 break;
-						 case 3:
-							 bussinessCsv.writeNext(csvData);
-							 break;
-						 }
-					 }else {
-						 System.out.println("Contact already exist duplicate not allowed");
-					 }
-					 familyCsv.close();
-					 friendsCsv.close();
-					 bussinessCsv.close();
-				 }
+				int choice = sc.nextInt();
+				if (choice == 1) {
+					Contact contact = new Contact();
+					contact.setContactInfo();
+					name = contact.firstName.toUpperCase() + " " + contact.lastName.toUpperCase();
+					if (multiAddressBook.get(key).addressBook.keySet().stream()
+							.noneMatch(c -> c.equalsIgnoreCase(name))) {
+						multiAddressBook.get(key).addressBook.put(name, contact);
+						multiAddressBook.get(key).listOfContacts.add(contact);
+						multiAddressBook.get(key).addressBook.get(name).displayContactInfo();
+
+						String csvOutputString = multiAddressBook.get(key).addressBook.get(name).showContactCSV();
+						String[] csvData = csvOutputString.split(",");
+
+						String json = gson.toJson(contact);
+						JSONParser parser = new JSONParser();
+						JSONObject strToJsonObj = (JSONObject) parser.parse(json);
+
+						switch (option) {
+						case 1:
+							familyCsv.writeNext(csvData);
+							outerObj1.add(strToJsonObj);
+							break;
+						case 2:
+							friendsCsv.writeNext(csvData);
+							outerObj2.add(strToJsonObj);
+							break;
+						case 3:
+							bussinessCsv.writeNext(csvData);
+							outerObj3.add(strToJsonObj);
+							break;
+						}
+					} else {
+						System.out.println("Contact already exist duplicate not allowed");
+					}
+					
+					file1.write(outerObj1.toString());
+					file2.write(outerObj2.toString());
+					file3.write(outerObj3.toString());
+			        
+					familyCsv.close();
+					friendsCsv.close();
+					bussinessCsv.close();
+
+					file1.close();
+					file2.close();
+					file3.close();
+				}
 			}
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
+
+	public void readJSONFile() throws IOException, ParseException {
+		System.out.println("--------------------------------------------------------------\n Read from JSON File: ");
+		JSONParser parser = new JSONParser();
+		JSONArray jsonArray1 = (JSONArray) parser
+				.parse(new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Family.json"));
+		System.out.println(jsonArray1.toJSONString());
+
+		JSONArray jsonArray2 = (JSONArray) parser
+				.parse(new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Friends.json"));
+		System.out.println(jsonArray2.toJSONString());
+
+		JSONArray jsonArray3 = (JSONArray) parser
+				.parse(new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Bussiness.json"));
+		System.out.println(jsonArray3.toJSONString());
+	}
+
 	public void readFromCSVFile() throws CsvValidationException {
-		 System.out.println("\nReading from CSV files:  \n");
-		 String[] contactInfo;
-		 
-		 try {
+		System.out.println("\nReading from CSV files:  \n");
+		String[] contactInfo;
+
+		try {
 			CSVReader familyCsv = new CSVReader(
-						new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Family.csv"));
+					new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Family.csv"));
 			while ((contactInfo = familyCsv.readNext()) != null) {
 				for (String cell : contactInfo) {
-	                System.out.print(cell + "\t");
-	            }
+					System.out.print(cell + "\t");
+				}
 				System.out.println();
 			}
-			 System.out.println("\n");
-			 
-			 CSVReader friendsCsv = new CSVReader(
-						new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Friends.csv"));
+			System.out.println("\n");
+
+			CSVReader friendsCsv = new CSVReader(
+					new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Friends.csv"));
 			while ((contactInfo = friendsCsv.readNext()) != null) {
 				for (String cell : contactInfo) {
-	                System.out.print(cell + "\t");
-	            }
+					System.out.print(cell + "\t");
+				}
 				System.out.println();
 			}
-			 System.out.println("\n");
-			 
-			 
-			 CSVReader bussinessCsv = new CSVReader(
-						new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Bussiness.csv"));
+			System.out.println("\n");
+
+			CSVReader bussinessCsv = new CSVReader(
+					new FileReader("D:/Eclipse_LFP_112/AddressBookManagementSystem/JSONFiles.Bussiness.csv"));
 			while ((contactInfo = bussinessCsv.readNext()) != null) {
 				for (String cell : contactInfo) {
-	                System.out.print(cell + "\t");
-	            }
+					System.out.print(cell + "\t");
+				}
 				System.out.println();
 			}
 		} catch (IOException e) {

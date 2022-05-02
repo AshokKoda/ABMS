@@ -101,4 +101,11 @@ public class Contact {
 				+ "," + email;
 	}
 
+	@Override
+	public String toString() {
+		return "\"Contact [First Name " + firstName + ", Last Name = " + lastName + "," + " Address = " + address
+				+ ", City = " + city + ", State = " + state + ", ZipCode = " + zipcode + ", Phone = " + phoneNo
+				+ ", Email = " + email + "]";
+	}
+
 }
