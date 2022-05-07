@@ -1,7 +1,10 @@
 package com.bridgelabz.services;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -10,121 +13,140 @@ import com.bridgelabz.model.Person;
 
 public class AddressBookService implements IPerson {
 
-	String firstName, lastName, email, address, city, state, zipCode;
-	long phoneNo;
+	static AddressBookDB addressBookDb;
+	Connection connection;
+	public final String INSERT_DATA = "insert into addressBook(firstname, lastname, address, city, state, zip, phoneno, email)values(?,?,?,?,?,?,?,?)";
+	public final String FETCH_DATA = "select * from addressbook";
+	public final String DELETE_DATA = "delete from addressbook where id =?";
+
+	int id;
+	String firstName;
+	String fName, lName, address, city, state, zip, phone, email;
 	List<Person> personList;
 	static Scanner sc;
 	public HashMap<String, Person> addressBook = new HashMap<>();
 
 	public AddressBookService() {
 		this.personList = new ArrayList<Person>();
+		addressBookDb = AddressBookDB.init();
+		connection = addressBookDb.getConnection();
 	}
 
 	// Add Contact
 	public void addPerson() {
 		System.out.println("-------------- Add New Contact --------------");
-		int i = 0;
-		sc = new Scanner(System.in);
-		while (i == 0) {
-			System.out.print("Enter First Name : ");
-			firstName = sc.nextLine();
-			if (checkExists(firstName)) {
-				System.out.println("Person Name Already Exists!!");
-			} else {
-				i = 1;
+		try {
+			PreparedStatement ps = connection.prepareStatement(INSERT_DATA);
+			int i = 0;
+			sc = new Scanner(System.in);
+			while (i == 0) {
+				System.out.print("Enter First Name : ");
+				String firstName = sc.nextLine();
+				if (checkExists(firstName)) {
+					System.out.println("Person Name Already Exists!!");
+				} else {
+					i = 1;
+				}
+				ps.setString(1, firstName);
 			}
-		}
-		System.out.print("Enter Last Name : ");
-		lastName = InputUtil.getStringValue();
-		System.out.print("Enter email : ");
-		email = InputUtil.getStringValue();
-		System.out.print("Enter Address : ");
-		address = InputUtil.getStringValue();
-		System.out.print("Enter city : ");
-		city = InputUtil.getStringValue();
-		System.out.print("Enter state : ");
-		state = InputUtil.getStringValue();
-		System.out.print("Enter Phone Number : ");
-		phoneNo = InputUtil.getLongValue();
-		System.out.print("Enter zip : ");
-		zipCode = InputUtil.getStringValue();
 
-		personList.add(new Person(firstName, lastName, email, address, city, state, phoneNo, zipCode));
-		System.out.println("Contact added successfully...");
+			System.out.print("Enter Last Name : ");
+			String lastName = InputUtil.getStringValue();
+			ps.setString(2, lastName);
+			System.out.print("Enter email : ");
+			String email = InputUtil.getStringValue();
+			ps.setString(8, email);
+			System.out.print("Enter Address : ");
+			String address = InputUtil.getStringValue();
+			ps.setString(3, address);
+			System.out.print("Enter city : ");
+			String city = InputUtil.getStringValue();
+			ps.setString(4, city);
+			System.out.print("Enter state : ");
+			String state = InputUtil.getStringValue();
+			ps.setString(5, state);
+			System.out.print("Enter Phone Number : ");
+			String phoneNo = InputUtil.getStringValue();
+			ps.setString(7, phoneNo);
+			System.out.print("Enter zip : ");
+			String zipCode = InputUtil.getStringValue();
+			ps.setString(6, zipCode);
+
+			personList.add(new Person(id, firstName, lastName, email, address, city, state, phoneNo, zipCode));
+			int status = ps.executeUpdate();
+
+			if (status > 0) {
+				System.out.println("Added successfully...");
+			}else {
+				System.out.println("SOmething went wrong...please try again!!!");
+			}
+			System.out.println("<------------------------------------------------------->");
+		} catch (SQLException e) {
+			System.out.println("Exception: " + e.getMessage());
+		}
+
 	}
 
 	// Edit Contact
 	public void editPerson() {
 		System.out.println("-------------- Edit Contact --------------");
-		int i = 0;
-		sc = new Scanner(System.in);
-
-		if (personList.isEmpty()) {
-			System.out.println("No Records To edit!!!");
-		} else {
-			for (Person person : personList) {
-				System.out.println("ID: #" + personList.indexOf(person) + " : " + person);
-			}
-			System.out.print("\nEnter #ID to Edit Contact : ");
-			int id = InputUtil.getIntValue();
-			System.out.println(personList.get(id));
-			System.out.println("<------------------------------------------------------->");
-
+		try {
 			boolean exit = false;
+			int i = 0;
+			System.out.println("---------- Select field ----------");
+			System.out.print("\nEnter #ID to Edit Contact : ");
+			sc = new Scanner(System.in);
+			int editId = sc.nextInt();
+
 			while (!exit) {
-				System.out.println("---------- Select field ----------");
+				String UPDATE_DATA = "update addressbook set firstname=?,lastname=?,address=?,city=?,state=?,zip=?,phoneno=?,email=? where id='"
+						+ editId + "'";
+				PreparedStatement psEdit = connection.prepareStatement(UPDATE_DATA);
 				System.out.println(
-						"1.First name \t2.Last name \t3.Email \t4.Address \t5.City \t6.State \t7.Phone Number \t8.Zip code \t9.Quit");
+						"1.First name\n2.Last name\n3.Address\n4.City\n5.State\n6.Zip code\n7.Phone Number\n8.Email\n9.Quit");
 				System.out.println("---------- Enter Your Choice ----------");
 				int choice = InputUtil.getIntValue();
 
+				sc = new Scanner(System.in);
 				switch (choice) {
 				case 1:
 					while (i == 0) {
 						System.out.print("Enter First Name : ");
-						firstName = sc.nextLine();
+						fName = sc.nextLine();
 						if (checkExists(firstName)) {
 							System.out.println("Person Name Already Exists!!");
 						} else {
 							i = 1;
 						}
 					}
-					personList.get(id).setFname(firstName);
 					break;
 				case 2:
 					System.out.print("Enter new Lastname : ");
-					lastName = InputUtil.getStringValue();
-					personList.get(id).setLname(lastName);
+					lName = InputUtil.getStringValue();
 					break;
 				case 3:
-					System.out.print("Enter new Email : ");
-					email = InputUtil.getStringValue();
-					personList.get(id).setEmail(email);
-					break;
-				case 4:
 					System.out.print("Enter new Address : ");
 					address = InputUtil.getStringValue();
-					personList.get(id).setAddress(address);
 					break;
-				case 5:
+				case 4:
 					System.out.print("Enter new City : ");
 					city = InputUtil.getStringValue();
-					personList.get(id).setCity(city);
 					break;
-				case 6:
+				case 5:
 					System.out.print("Enter new State : ");
 					state = InputUtil.getStringValue();
-					personList.get(id).setState(state);
+					break;
+				case 6:
+					System.out.print("Enter new Zip Code : ");
+					zip = InputUtil.getStringValue();
 					break;
 				case 7:
 					System.out.print("Enter new Phone : ");
-					phoneNo = InputUtil.getLongValue();
-					personList.get(id).setPhone(phoneNo);
+					phone = InputUtil.getStringValue();
 					break;
 				case 8:
-					System.out.print("Enter new Zip Code : ");
-					zipCode = InputUtil.getStringValue();
-					personList.get(id).setZip(zipCode);
+					System.out.print("Enter new Email : ");
+					email = InputUtil.getStringValue();
 					break;
 				case 9:
 					exit = true;
@@ -132,10 +154,27 @@ public class AddressBookService implements IPerson {
 					break;
 				default:
 					System.out.println("Please Enter Valid Option");
+					System.out.println("<------------------------------------------------------->");
 				}
-				System.out.println(personList.get(id));
-				System.out.println("Contact is updated successfully.!!!");
+				psEdit.setString(1, fName);
+				psEdit.setString(2, lName);
+				psEdit.setString(3, address);
+				psEdit.setString(4, city);
+				psEdit.setString(5, state);
+				psEdit.setString(6, zip);
+				psEdit.setString(7, phone);
+				psEdit.setString(8, email);
+				int update = psEdit.executeUpdate();
+
+				if (update > 0) {
+					System.out.println("Updated Successfully.");
+				} else {
+					System.out.println("Record Not Found...");
+				}
+				System.out.println("<------------------------------------------------------->");
 			}
+		} catch (SQLException e) {
+			System.out.println("Exception: " + e.getMessage());
 		}
 
 	}
@@ -143,19 +182,23 @@ public class AddressBookService implements IPerson {
 	// Delete Contact
 	public void deletePerson() {
 		System.out.println("-------------- Delete Contact --------------");
-		if (personList.isEmpty()) {
-			System.out.println("No Records To delete!!!");
-		} else {
-			for (Person person : personList) {
-				System.out.println("ID: #" + personList.indexOf(person) + " : " + person);
+		sc = new Scanner(System.in);
+		try {
+			PreparedStatement ps = connection.prepareStatement(DELETE_DATA);
+			System.out.println("Enter the ID to delete: ");
+			int id = sc.nextInt();
+			ps.setInt(1, id);
+			int delete = ps.executeUpdate();
+			if(delete > 0) {
+				System.out.println("Contact deleted successfully." + "Delete count: " + delete);
+			}else {
+				System.out.println("Record Not Found...");
 			}
-
-			System.out.print("\nEnter #ID to delete contact : ");
-			int id = InputUtil.getIntValue();
-			personList.remove(id);
-			System.out.println("Contact is deleted successfully.........!!!!!!");
+			connection.setAutoCommit(true);
+			System.out.println("<------------------------------------------------------->");
+		} catch (SQLException e) {
+			System.out.println("Exception: " + e.getMessage());
 		}
-
 	}
 
 	// check duplicate entry
@@ -168,29 +211,25 @@ public class AddressBookService implements IPerson {
 	public void searchInContacts() {
 		int i = 0;
 		SearchByStateOrCity search = new SearchByStateOrCity();
-		if (personList.isEmpty()) {
-			System.out.println("No Records To search!!!");
-		} else {
-			while (i == 0) {
-				System.out.println("----------------Search by City or State--------------");
-				System.out.println("1.Search By City \t2.Search By State \t3.Back");
-				System.out.println("------------------Choose Your Option-----------------");
-				int choice = InputUtil.getIntValue();
+		while (i == 0) {
+			System.out.println("----------------Search by City or State--------------");
+			System.out.println("1.Search By City \t2.Search By State \t3.Back");
+			System.out.println("------------------Choose Your Option-----------------");
+			int choice = InputUtil.getIntValue();
 
-				switch (choice) {
-				case 1:
-					search.searchByCity(personList);
-					break;
-				case 2:
-					search.searchByState(personList);
-					break;
-				case 3:
-					i = 1;
-					System.out.println("Search Quit");
-					break;
-				default:
-					System.out.println("Please Enter Valid Option.!!!");
-				}
+			switch (choice) {
+			case 1:
+				search.searchByCity();
+				break;
+			case 2:
+				search.searchByState();
+				break;
+			case 3:
+				i = 1;
+				System.out.println("Search Quit");
+				break;
+			default:
+				System.out.println("Please Enter Valid Option.!!!");
 			}
 		}
 	}
@@ -253,14 +292,47 @@ public class AddressBookService implements IPerson {
 	// showAllContacts
 	public void showAllContacts() {
 		System.out.println("-------------- Show All Contacts --------------");
-		if (personList.isEmpty()) {
-			System.out.println("No Records To show!!!");
-		} else {
-			Collections.sort(personList, (p1, p2) -> p1.getFname().compareTo(p2.getFname()));
-			for (Person person : personList) {
-				System.out.println(person);
+		try {
+			PreparedStatement ps = connection.prepareStatement(FETCH_DATA);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Person person = new Person();
+				person.setId(rs.getInt("id"));
+				person.setFname(rs.getString("firstname"));
+				person.setLname(rs.getString("lastname"));
+				person.setAddress(rs.getString("address"));
+				person.setCity(rs.getString("city"));
+				person.setState(rs.getString("state"));
+				person.setZip(rs.getString("zip"));
+				person.setPhoneno(rs.getString("phoneno"));
+				person.setEmail(rs.getString("email"));
+				personList.add(person);
+
 			}
+			personList.forEach(a -> {
+				System.out.println("ID : " + a.getId());
+				System.out.println("Firstname : " + a.getFname());
+				System.out.println("Lastname : " + a.getLname());
+				System.out.println("Address : " + a.getAddress());
+				System.out.println("City : " + a.getCity());
+				System.out.println("State : " + a.getState());
+				System.out.println("Zip code : " + a.getZip());
+				System.out.println("Phone no : " + a.getPhoneno());
+				System.out.println("Email : " + a.getEmail());
+				System.out.println("<--------------------------------------------------->");
+			});
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+//		if (personList.isEmpty()) {
+//			System.out.println("No Records To show!!!");
+//		} else {
+//			Collections.sort(personList, (p1, p2) -> p1.getFname().compareTo(p2.getFname()));
+//			for (Person person : personList) {
+//				System.out.println(person);
+//			}
+//		}
 	}
 
 }

@@ -4,23 +4,33 @@ import java.util.Comparator;
 
 public class Person {
 
-	private String fname, lname, email, address, city, state, zip;
-	private long phone;
+	private int id;
+	private String fname, lname, address, city, state, zip, phoneno, email;
 
 	public Person() {
 
 	}
 
-	public Person(String fname, String lname, String email, String address, String city, String state, long phone,
-			String zip) {
+	public Person(int id, String fname, String lname, String address, String city, String state, String zip,
+			String phoneno, String email) {
+		super();
+		this.id = id;
 		this.fname = fname;
 		this.lname = lname;
-		this.email = email;
 		this.address = address;
 		this.city = city;
 		this.state = state;
-		this.phone = phone;
 		this.zip = zip;
+		this.phoneno = phoneno;
+		this.email = email;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getFname() {
@@ -37,14 +47,6 @@ public class Person {
 
 	public void setLname(String lname) {
 		this.lname = lname;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getAddress() {
@@ -71,14 +73,6 @@ public class Person {
 		this.state = state;
 	}
 
-	public long getPhone() {
-		return phone;
-	}
-
-	public void setPhone(long phone) {
-		this.phone = phone;
-	}
-
 	public String getZip() {
 		return zip;
 	}
@@ -87,10 +81,26 @@ public class Person {
 		this.zip = zip;
 	}
 
+	public String getPhoneno() {
+		return phoneno;
+	}
+
+	public void setPhoneno(String phoneno) {
+		this.phoneno = phoneno;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public String toString() {
-		return "Person [fname=" + fname + ", lname=" + lname + ", email=" + email + ", address=" + address + ", city="
-				+ city + ", state=" + state + ", phone=" + phone + ", zip=" + zip + "]";
+		return "Person [id=" + id + ", fname=" + fname + ", lname=" + lname + ", address=" + address + ", city=" + city
+				+ ", state=" + state + ", zip=" + zip + ", phoneno=" + phoneno + ", email=" + email + "]";
 	}
 
 	@Override
